@@ -9,6 +9,3 @@ const connectDb = async()=>{
     console.log('[Prisma] connected to PostgreSql')
 }
 
-module.exports = {
-    connectDb
-}
