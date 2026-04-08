@@ -8,5 +8,7 @@ const connectDb = async()=>{
     await prisma.$connect();
     console.log('[Prisma] connected to PostgreSql')
 }
-
+module.exports = {
+    connectDb
+}
 
