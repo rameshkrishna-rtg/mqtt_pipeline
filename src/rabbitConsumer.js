@@ -17,7 +17,20 @@ const startConsumer = async () => {
         if (!msg) return;
 
         try {
-            const { topic, payload, receivedAt } = JSON.parse(msg.content.toString());
+            const raw = msg.content.toString();
+
+            let topic, payload, receivedAt;
+
+            try {
+                const parsed = JSON.parse(raw);
+                topic = parsed.topic;
+                payload = parsed.payload,
+                    receivedAt = parsed.receivedAt;
+            } catch {
+                topic = msg.properties?.headers?.topic || "unknown"
+                payload = raw;
+                receivedAt = new Date().toISOString();
+            }
 
             //Cache latest in Redis
             await cacheLatest(topic, { payload, receivedAt });
@@ -27,7 +40,7 @@ const startConsumer = async () => {
 
             channel.ack(msg); //ack only after both succeed
         } catch (err) {
-            console.error(`❌[Consumer] Failed to process message: ${err.mesage}`)
+            console.error(`❌[Consumer] Failed to process message: ${err.message}`)
             channel.nack(msg, false, true) //requeue on failure
         }
     });

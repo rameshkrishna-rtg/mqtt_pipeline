@@ -15,6 +15,8 @@ async function main() {
     process.exit(0);    
     });
 
-    main().catch(console.error);
+   
 
 }
+
+ main().catch(console.error);

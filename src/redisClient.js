@@ -9,7 +9,7 @@ redis.on('connect', () =>
 )
 
 redis.on("error", (err) =>
-    console.erorr("⚠️[Redis] Error: ", err)
+    console.error("⚠️[Redis] Error: ", err)
 )
 
 const cacheLatest = async (topic, data) => {
