@@ -1,6 +1,6 @@
 # 🚀 MQTT Pipeline
 
-A real-time IoT data ingestion pipeline that receives data from MQTT-enabled devices (e.g., iTank sensors), queues messages via RabbitMQ, caches them in Redis, and persists to PostgreSQL using Prisma ORM.
+A real-time IoT data ingestion pipeline that receives data from MQTT-enabled devices (e.g., from sensors), queues messages via RabbitMQ, caches them in Redis, and persists to PostgreSQL using Prisma ORM.
 ## 🏗️ Architecture
 
 MQTT Device → Node.js Subscriber → RabbitMQ Queue → Consumer → Redis Cache
@@ -146,7 +146,7 @@ Create a `.env` file in the project root:
 
 ```env
 MQTT_BROKER=mqtt://your-broker-url:1883
-MQTT_TOPIC="itank/#"
+MQTT_TOPIC="topic/#"
 MQTT_USERNAME=your_mqtt_username
 MQTT_PASSWORD=your_mqtt_password
 
@@ -161,8 +161,8 @@ DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/iot_db"
 
 > ⚠️ **Always wrap MQTT topics that contain `#` or `+` in double quotes.** Without quotes, the `#` is treated as a comment character and the value gets silently cut off.
 >
-> ✅ Correct: `MQTT_TOPIC="itank/#"`
-> ❌ Wrong: `MQTT_TOPIC=itank/#`
+> ✅ Correct: `MQTT_TOPIC="topic/#"`
+> ❌ Wrong: `MQTT_TOPIC=topic/#`
 
 ---
 
@@ -218,14 +218,14 @@ pm2 save
 ✅[RabbitMQ] Producer connected
 ✅[RabbitMQ] Consumer ready, waiting for message...
 [MQTT] Connected
-[MQTT] Subscribed -> itank/#
+[MQTT] Subscribed -> topic/#
 ```
 
 When a device sends data:
 ```
-✅[RabbitMQ] published: itank/868064072965913
-[Redis] Cached -> latest:itank:868064072965913
-[Prisma] Inserted id=1 topic=itank/868064072965913
+✅[RabbitMQ] published: topic/868064072965913
+[Redis] Cached -> latest:topic:868064072965913
+[Prisma] Inserted id=1 topic=topic/868064072965913
 ```
 
 ---
@@ -255,14 +255,14 @@ MQTT-Pipeline/
 | Error | Fix |
 |-------|-----|
 | `SyntaxError: Unexpected end of JSON input` | MQTT payload is raw CSV, not JSON. Use `message.toString()` directly — remove `JSON.parse()` in `mqttSubscriber.js` |
-| `MQTT_TOPIC` only subscribing to `itank/` instead of `itank/#` | Wrap topic in quotes in `.env`: `MQTT_TOPIC="itank/#"` |
+| `MQTT_TOPIC` only subscribing to `topic/` instead of `topic/#` | Wrap topic in quotes in `.env`: `MQTT_TOPIC="topic/#"` |
 | `RABBIT_QUEUE` vs `RABBITMQ_QUEUE` mismatch | Ensure the `.env` key matches `config.js` exactly — use `RABBITMQ_QUEUE` in both |
 | `Could not find Prisma Schema` | Run `npx prisma` commands from the project root directory, not from AppData |
 | `Error: getaddrinfo ENOTFOUND` | MQTT broker hostname unreachable — check internet and broker URL in `.env` |
 | Data not saving to database | Check `RABBITMQ_QUEUE` key matches in `.env` and `config.js` — a mismatch means producer and consumer use different queues |
 | `redis-cli` not found | Add Redis install folder to Windows PATH |
 | RabbitMQ fails to start | Install Erlang/OTP 26 **before** RabbitMQ. Reinstall RabbitMQ after confirming Erlang works |
-| `Set-Location` error with spaces in path | Wrap the path in quotes: `cd "D:\Real Tech\MQTT-Node\MQTT-Pipeline"` |
+
 
 ---
 
@@ -275,7 +275,7 @@ MQTT-Pipeline/
 - [ ] PostgreSQL installed and `iot_db` database created
 - [ ] Node.js 18 or 20 installed
 - [ ] `.env` file created with all required variables
-- [ ] `MQTT_TOPIC` wrapped in quotes if using wildcards (`"itank/#"`)
+- [ ] `MQTT_TOPIC` wrapped in quotes if using wildcards (`"topic/#"`)
 - [ ] `RABBITMQ_QUEUE` key matches in both `.env` and `config.js`
 - [ ] `npx prisma migrate dev --name init` completed successfully
 - [ ] `pm2 start index.js --name mqtt-pipeline` running
