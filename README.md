@@ -1,15 +1,10 @@
 # 🚀 MQTT Pipeline
 
 A real-time IoT data ingestion pipeline that receives data from MQTT-enabled devices (e.g., iTank sensors), queues messages via RabbitMQ, caches them in Redis, and persists to PostgreSQL using Prisma ORM.
-
----
-
 ## 🏗️ Architecture
 
-```
 MQTT Device → Node.js Subscriber → RabbitMQ Queue → Consumer → Redis Cache
-                                                              → PostgreSQL DB
-```
+                                                              → PostgreSQL D
 
 ---
 
