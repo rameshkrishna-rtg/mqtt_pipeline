@@ -1,33 +1,38 @@
-const Redis = require("ioredis");
-const config = require("./config");
+const ampq = require("amqplib")
+const config = require("./config")
 
+const { cacheLatest } = require("./redisClient")
+const { insertReading } = require("./dbClient")
 
-const redis = new Redis({ host: config.redis.host, port: config.redis.port });
+const startConsumer = async () => {
+    const conn = await ampq.connect(config.rabbit.url);
+    const channel = await conn.createChannel();
 
-redis.on('connect', () =>
-    console.log("✅[Redis] connected")
-)
+    await channel.assertQueue(config.rabbit.queue, { durable: true });
+    channel.prefetch(10);
 
-redis.on("error", (err) =>
-    console.erorr("⚠️[Redis] Error: ", err)
-)
+    console.log(`✅[RabbitMQ] Consumer ready, waiting for message...`)
 
-const cacheLatest = async (topic, data) => {
-    const key = `latest: ${topic.replace(/\//g, ':')}`;
+    channel.consume(config.rabbit.queue, async (msg) => {
+        if (!msg) return;
 
-    await redis.set(key, JSON.stringify(data), 'EX', 3600);
-    console.log(`[Redis] Casched -> ${key}`)
-}
+        try {
+            const { topic, payload, receivedAt } = JSON.parse(msg.content.toString());
 
-const getLatest = async (topic) => {
-    const key = `latest: ${topic.replace(/\//g, ':')}`;
+            //Cache latest in Redis
+            await cacheLatest(topic, { payload, receivedAt });
 
-    const val = await redis.get(key);
-    return val ? JSON.parse(val) : null;
+            //persist to Postgres
+            await insertReading(topic, payload, receivedAt);
+
+            channel.ack(msg); //ack only after both succeed
+        } catch (err) {
+            console.error(`❌[Consumer] Failed to process message: ${err.mesage}`)
+            channel.nack(msg, false, true) //requeue on failure
+        }
+    });
 }
 
 module.exports = {
-    redis,
-    cacheLatest,
-    getLatest
+    startConsumer
 }

@@ -10,3 +10,17 @@ const connectRabbit = async () => {
 
     console.log('✅[RabbitMQ] Producer connected')
 }
+
+const publishToQueue = async (data) => {
+    if (!channel) await connectRabbit();
+    channel.sendToQueue(
+        config.rabbit.queue,
+        Buffer.from(JSON.stringify(data)), { persistent: true }
+    );
+    console.log(`✅[RabbitMQ] published:`, data.topic);
+}
+
+module.exports = {
+    connectRabbit,
+    publishToQueue
+}
