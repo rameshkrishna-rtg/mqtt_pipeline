@@ -15,7 +15,7 @@ const startMqttSubscriber = async () => {
             if (err)
                 console.error(`[MQTT] Snbscriben error: ${err}`)
             else
-                console.log(`[MQTT] Subscribed -> ${config.mqtt.topic}`);
+                console.log(`[MQTT] Subscribed to the topic: -> ${config.mqtt.topic}`);
         });
     });
 
