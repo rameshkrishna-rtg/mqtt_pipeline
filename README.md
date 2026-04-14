@@ -151,7 +151,7 @@ MQTT_USERNAME=your_mqtt_username
 MQTT_PASSWORD=your_mqtt_password
 
 RABBITMQ_URL=amqp://guest:guest@localhost:5672
-RABBITMQ_QUEUE=sensor_data
+RABBITMQ_QUEUE=Queue_name
 
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
