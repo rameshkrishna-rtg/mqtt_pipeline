@@ -30,14 +30,14 @@ MQTT Device → Node.js Subscriber → RabbitMQ Queue → Consumer → Redis Cac
 2. Choose **OTP 26.x — Windows 64-bit Binary**
 3. Run the installer as **Administrator**, accept all defaults
 4. Verify installation — open a new Command Prompt and run:
-   ```
+   
    erl
-   ```
+   
    You should see an Erlang shell. Type `q().` to exit.
 
 > 💡 If `erl` is not recognized, add `C:\Program Files\erl-26.x\bin` to your System PATH.
 
----
+
 
 ### 2. Install RabbitMQ 3.13
 
@@ -83,7 +83,7 @@ You should see `Status: running`.
 
 > 💡 To auto-start on Windows boot: open `services.msc`, find **RabbitMQ**, set Startup Type to **Automatic**.
 
----
+
 
 ### 3. Install Redis
 
