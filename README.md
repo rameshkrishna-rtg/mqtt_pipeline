@@ -6,7 +6,7 @@ A real-time IoT data ingestion pipeline that receives data from MQTT-enabled dev
 MQTT Device → Node.js Subscriber → RabbitMQ Queue → Consumer → Redis Cache
                                                               → PostgreSQL D
 
----
+
 
 ## 📦 Prerequisites
 
@@ -18,7 +18,7 @@ MQTT Device → Node.js Subscriber → RabbitMQ Queue → Consumer → Redis Cac
 | Redis | Latest (Windows) | In-memory cache |
 | PostgreSQL | 15 or 16 | Persistent database |
 
----
+
 
 ## ⚙️ Installation & Setup
 
