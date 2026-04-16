@@ -1,4 +1,7 @@
+const ampq = require("amqplib");
+const config = require("./config")
 
+let channel;
 
 const connectRabbit = async () => {
     const conn = await ampq.connect(config.rabbit.url);
