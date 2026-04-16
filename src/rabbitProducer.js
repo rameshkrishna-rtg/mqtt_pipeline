@@ -19,4 +19,8 @@ const publishToQueue = async (data) => {
     );
     console.log(`✅[RabbitMQ] published:`, data.topic);
 }
+module.exports = {
+    connectRabbit,
+    publishToQueue
+}
 
